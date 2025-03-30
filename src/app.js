@@ -1,19 +1,41 @@
 const express = require("express");
+const app = express();  
+const connectDB = require("./config/database");
+const User = require("./models/user");
 
 
-const app = express();
+//creating a API
 
-app.use("/test", (req, res) => {
+app.post("/signup", async (req , res) => {
 
-    res.send("hello world from test");
+    
+// creating a new instance of the User Model
+    const user = new User({
+
+        firstName: "Himanshu",
+        lastName: "rane",
+        emailId: "abs@rane.com",
+        password: "abc123",
+    });
+  try{
+  await user.save();
+  res.send("user created");}
+  catch(err){
+      res.status(400).send("Error: " + err.message);
+  }
 });
 
-app.use((req, res)=>{
+connectDB()
+    .then (()=>{
 
-    res.send("hello world");
+        console.log("database connected");
 
-});
+        app.listen(3000 , () => {
+            console.log("server is running on port 3000");
+        });
+    }).catch((err) => {
+        console.log(err);    
+    });
 
-app.listen(3000 , () => {
-    console.log("server is running on port 3000");
-});
+
+
